@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:gravity="center">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Волейбол: Тактические схемы"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="32dp"
+        android:textAlignment="center" />
+
+    <Button
+        android:id="@+id/btn_theory_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Теория"
+        android:layout_marginBottom="16dp"
+        android:padding="16dp" />
+
+    <Button
+        android:id="@+id/btn_test_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Тесты"
+        android:layout_marginBottom="16dp"
+        android:padding="16dp" />
+
+    <Button
+        android:id="@+id/btn_progress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Прогресс"
+        android:layout_marginBottom="16dp"
+        android:padding="16dp" />
+
+    <Button
+        android:id="@+id/btn_add_theory"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Добавить теорию"
+        android:layout_marginBottom="8dp"
+        android:padding="16dp" />
+
+    <Button
+        android:id="@+id/btn_add_test"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Добавить тест"
+        android:padding="16dp" />
+
+</LinearLayout>

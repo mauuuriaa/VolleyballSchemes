@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="24dp">
+
+        <TextView
+            android:id="@+id/tv_theory_detail_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Название темы"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="16dp"/>
+
+        <ImageView
+            android:id="@+id/iv_theory_detail_image"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_volleyball"
+            android:layout_marginBottom="16dp"
+            android:visibility="gone"/>
+
+        <TextView
+            android:id="@+id/tv_theory_detail_content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Текст теории"
+            android:textSize="16sp"
+            android:layout_marginBottom="24dp"/>
+
+        <Button
+            android:id="@+id/btn_mark_completed"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Отметить как изучено"
+            android:layout_marginBottom="8dp"/>
+
+        <Button
+            android:id="@+id/btn_go_to_test"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Перейти к тесту"
+            android:layout_marginBottom="8dp"/>
+
+        <Button
+            android:id="@+id/btn_back"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Назад"
+            android:layout_marginBottom="8dp"/>
+
+    </LinearLayout>
+</ScrollView>

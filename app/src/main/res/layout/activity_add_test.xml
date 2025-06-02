@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="24dp">
+
+        <EditText
+            android:id="@+id/et_test_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Название теста"/>
+
+        <EditText
+            android:id="@+id/et_test_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Описание теста"
+            android:layout_marginTop="12dp"/>
+
+        <Spinner
+            android:id="@+id/spinner_theory"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"/>
+
+        <EditText
+            android:id="@+id/et_test_passing_score"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Проходной балл"
+            android:inputType="number"
+            android:layout_marginTop="12dp"/>
+
+        <Button
+            android:id="@+id/btn_add_question"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Добавить вопрос"
+            android:layout_marginTop="16dp"/>
+
+        <TextView
+            android:id="@+id/tv_questions_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Вопросов добавлено: 0"
+            android:layout_marginTop="8dp"/>
+
+        <Button
+            android:id="@+id/btn_save_test"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Сохранить"
+            android:layout_marginTop="24dp"/>
+        <Button
+            android:id="@+id/btn_back"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Назад"
+            android:layout_marginBottom="16dp"/>
+    </LinearLayout>
+</ScrollView>
