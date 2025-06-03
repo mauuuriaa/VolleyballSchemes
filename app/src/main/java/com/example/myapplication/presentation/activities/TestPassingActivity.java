@@ -4,15 +4,15 @@ import android.os.Bundle;
 import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.myapplication.R;
-import com.example.myapplication.data.dto.AnswerDTO;
-import com.example.myapplication.data.dto.QuestionDTO;
-import com.example.myapplication.data.dto.TestDTO;
-import com.example.myapplication.data.adapter.AdapterTestRepository;
-import com.example.myapplication.data.repository.InFileTestRepository;
+import com.example.myapplication.App;
+import com.example.myapplication.domain.entity.Test;
+import com.example.myapplication.domain.entity.Question;
+import com.example.myapplication.domain.entity.Answer;
 import com.example.myapplication.domain.entity.TestResult;
 import com.example.myapplication.domain.usecase.TestUseCases;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class TestPassingActivity extends AppCompatActivity {
@@ -20,16 +20,14 @@ public class TestPassingActivity extends AppCompatActivity {
     private RadioGroup rgAnswers;
     private Button btnNext;
 
-    private List<QuestionDTO> questions = new ArrayList<>();
+    private List<Question> questions = new ArrayList<>();
     private int currentQuestion = 0;
     private List<Integer> selectedAnswers = new ArrayList<>();
-    private TestDTO testDTO;
+    private Test test;
     private int correctAnswers = 0;
     private int passingScore = 0;
     private long testId;
 
-    private InFileTestRepository inFileRepo;
-    private AdapterTestRepository adapterRepo;
     private TestUseCases testUseCases;
 
     @Override
@@ -44,20 +42,19 @@ public class TestPassingActivity extends AppCompatActivity {
 
         testId = getIntent().getLongExtra("test_id", -1);
 
-        // Создаем репозитории и usecase
-        inFileRepo = new InFileTestRepository(this);
-        adapterRepo = new AdapterTestRepository(inFileRepo);
-        testUseCases = new TestUseCases(adapterRepo);
+        // Получаем usecase только через App
+        testUseCases = App.getInstance(this).getTestUseCases();
 
-        // Получаем тест через DTO-репозиторий
-        testDTO = inFileRepo.getTestDTOById(testId);
-        if (testDTO == null) {
+        // Получаем тест через usecase
+        test = testUseCases.getTestById(testId);
+
+        if (test == null) {
             Toast.makeText(this, "Тест не найден", Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
-        questions = testDTO.getQuestions();
-        passingScore = testDTO.getPassingScore();
+        questions = test.getQuestions();
+        passingScore = test.getPassingScore();
 
         if (questions == null || questions.isEmpty()) {
             Toast.makeText(this, "В этом тесте нет вопросов", Toast.LENGTH_SHORT).show();
@@ -91,12 +88,12 @@ public class TestPassingActivity extends AppCompatActivity {
     }
 
     private void showQuestion() {
-        QuestionDTO question = questions.get(currentQuestion);
+        Question question = questions.get(currentQuestion);
         tvQuestionNumber.setText("Вопрос " + (currentQuestion + 1) + " из " + questions.size());
         tvQuestionText.setText(question.getText());
 
         rgAnswers.removeAllViews();
-        List<AnswerDTO> answers = question.getAnswers();
+        List<Answer> answers = question.getAnswers();
         for (int i = 0; i < answers.size(); i++) {
             RadioButton rb = new RadioButton(this);
             rb.setText(answers.get(i).getText());
@@ -116,7 +113,7 @@ public class TestPassingActivity extends AppCompatActivity {
     private void checkResult() {
         correctAnswers = 0;
         for (int i = 0; i < questions.size(); i++) {
-            QuestionDTO question = questions.get(i);
+            Question question = questions.get(i);
             int selected = selectedAnswers.get(i);
             if (selected != -1 && question.getAnswers().get(selected).isCorrect()) {
                 correctAnswers++;
@@ -127,14 +124,14 @@ public class TestPassingActivity extends AppCompatActivity {
         String message = "Правильных ответов: " + correctAnswers + " из " + questions.size() +
                 "\n" + (passed ? "Тест пройден!" : "Тест не пройден.");
 
-        // СОХРАНЕНИЕ РЕЗУЛЬТАТА через usecase и adapter
+        // СОХРАНЕНИЕ РЕЗУЛЬТАТА через usecase
         TestResult result = new TestResult(
                 System.currentTimeMillis(),
                 testId,
                 correctAnswers,
                 questions.size(),
                 passed,
-                new java.util.Date()
+                new Date()
         );
         testUseCases.submitTestResult(result);
 

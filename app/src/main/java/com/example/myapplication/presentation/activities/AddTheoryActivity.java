@@ -7,14 +7,15 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.myapplication.R;
-import com.example.myapplication.data.adapter.AdapterTheoryRepository;
-import com.example.myapplication.data.repository.InFileTheoryRepository;
+import com.example.myapplication.App;
 import com.example.myapplication.domain.entity.Theory;
 import com.example.myapplication.domain.usecase.TheoryUseCases;
 
 public class AddTheoryActivity extends AppCompatActivity {
     private EditText etTitle, etContent, etCategoryId;
     private Button btnSave;
+
+    private TheoryUseCases theoryUseCases;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,13 +27,10 @@ public class AddTheoryActivity extends AppCompatActivity {
         etTitle = findViewById(R.id.et_theory_title);
         etContent = findViewById(R.id.et_theory_content);
         //etCategoryId = findViewById(R.id.et_theory_category_id);
-
         btnSave = findViewById(R.id.btn_save_theory);
 
-        // Создаем репозиторий и адаптер
-        InFileTheoryRepository inFileRepo = new InFileTheoryRepository(this);
-        AdapterTheoryRepository adapterRepo = new AdapterTheoryRepository(inFileRepo);
-        TheoryUseCases useCases = new TheoryUseCases(adapterRepo);
+        // Получаем usecase через App
+        theoryUseCases = App.getInstance(this).getTheoryUseCases();
 
         btnSave.setOnClickListener(v -> {
             String title = etTitle.getText().toString();
@@ -47,10 +45,12 @@ public class AddTheoryActivity extends AppCompatActivity {
                 return;
             }
 
-            long newId = inFileRepo.generateTheoryId();
+            // Генерация id через data-слой, если нужно
+            long newId = App.getInstance(this).getInFileTheoryRepository().generateTheoryId();
+
             Theory theory = new Theory(newId, title, content, categoryId);
 
-            useCases.addTheory(theory);
+            theoryUseCases.addTheory(theory);
 
             Toast.makeText(this, "Теория добавлена!", Toast.LENGTH_SHORT).show();
             finish();

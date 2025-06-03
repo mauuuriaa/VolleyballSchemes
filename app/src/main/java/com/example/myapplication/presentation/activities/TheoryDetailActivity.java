@@ -8,8 +8,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.myapplication.R;
-import com.example.myapplication.data.adapter.AdapterTheoryRepository;
-import com.example.myapplication.data.repository.InFileTheoryRepository;
+import com.example.myapplication.App;
 import com.example.myapplication.domain.entity.Theory;
 import com.example.myapplication.domain.usecase.TheoryUseCases;
 
@@ -35,10 +34,8 @@ public class TheoryDetailActivity extends AppCompatActivity {
 
         long theoryId = getIntent().getLongExtra("theory_id", -1);
 
-        // Используем AdapterTheoryRepository вместо InFileTheoryRepository напрямую
-        InFileTheoryRepository inFileRepo = new InFileTheoryRepository(this);
-        AdapterTheoryRepository adapterRepo = new AdapterTheoryRepository(inFileRepo);
-        theoryUseCases = new TheoryUseCases(adapterRepo);
+        // Получаем usecase только через App
+        theoryUseCases = App.getInstance(this).getTheoryUseCases();
 
         theory = theoryUseCases.getTheoryById(theoryId);
 

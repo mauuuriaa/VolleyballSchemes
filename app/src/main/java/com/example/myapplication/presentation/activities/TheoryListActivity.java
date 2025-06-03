@@ -8,8 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.myapplication.R;
-import com.example.myapplication.data.adapter.AdapterTheoryRepository;
-import com.example.myapplication.data.repository.InFileTheoryRepository;
+import com.example.myapplication.App;
 import com.example.myapplication.domain.entity.Theory;
 import com.example.myapplication.domain.usecase.TheoryUseCases;
 import com.example.myapplication.presentation.adapters.TheoryAdapter;
@@ -29,15 +28,11 @@ public class TheoryListActivity extends AppCompatActivity implements TheoryAdapt
         Button btnBack = findViewById(R.id.btn_back);
         btnBack.setOnClickListener(v -> finish());
 
-        initUseCases();
+        // Получаем usecase только через App
+        theoryUseCases = App.getInstance(this).getTheoryUseCases();
+
         initViews();
         loadTheories();
-    }
-
-    private void initUseCases() {
-        InFileTheoryRepository inFileRepo = new InFileTheoryRepository(this);
-        AdapterTheoryRepository adapterRepo = new AdapterTheoryRepository(inFileRepo);
-        theoryUseCases = new TheoryUseCases(adapterRepo);
     }
 
     private void initViews() {

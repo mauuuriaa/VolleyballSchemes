@@ -9,11 +9,12 @@ public class Question {
     private List<Answer> answers;
     private long testId;
 
-    public Question(long id, String text, String imageUrl, long testId) {
+    public Question(long id, String text, String imageUrl, long testId, List<Answer> answers) {
         this.id = id;
         this.text = text;
         this.imageUrl = imageUrl;
         this.testId = testId;
+        this.answers = answers;
     }
 
     // Getters и Setters

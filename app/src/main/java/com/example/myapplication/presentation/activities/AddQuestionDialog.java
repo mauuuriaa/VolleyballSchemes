@@ -4,27 +4,28 @@ import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.widget.*;
-import com.example.myapplication.data.dto.AnswerDTO;
-import com.example.myapplication.data.dto.QuestionDTO;
 import com.example.myapplication.R;
+import com.example.myapplication.domain.entity.Answer;
+import com.example.myapplication.domain.entity.Question;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class AddQuestionDialog extends Dialog {
-    private EditText etQuestionText, etQuestionImageUrl;
+    private EditText etQuestionText;
     private EditText etAnswerText;
     private CheckBox cbIsCorrect;
     private Button btnAddAnswer, btnSaveQuestion;
     private ListView lvAnswers;
 
-    private List<AnswerDTO> answers = new ArrayList<>();
+    private List<Answer> answers = new ArrayList<>();
     private ArrayAdapter<String> answersAdapter;
     private List<String> answersStrings = new ArrayList<>();
 
     private OnQuestionAddedListener listener;
 
     public interface OnQuestionAddedListener {
-        void onQuestionAdded(QuestionDTO question);
+        void onQuestionAdded(Question question);
     }
 
     public AddQuestionDialog(Context context, OnQuestionAddedListener listener) {
@@ -38,8 +39,6 @@ public class AddQuestionDialog extends Dialog {
         setContentView(R.layout.dialog_add_question);
 
         etQuestionText = findViewById(R.id.et_question_text);
-
-        // etQuestionImageUrl = findViewById(R.id.et_question_image_url);
         etAnswerText = findViewById(R.id.et_answer_text);
         cbIsCorrect = findViewById(R.id.cb_is_correct);
         btnAddAnswer = findViewById(R.id.btn_add_answer);
@@ -53,7 +52,7 @@ public class AddQuestionDialog extends Dialog {
             String answerText = etAnswerText.getText().toString();
             boolean isCorrect = cbIsCorrect.isChecked();
             if (!answerText.isEmpty()) {
-                AnswerDTO answer = new AnswerDTO(System.currentTimeMillis(), answerText, isCorrect, 0L);
+                Answer answer = new Answer(System.currentTimeMillis(), answerText, isCorrect, 0L);
                 answers.add(answer);
                 answersStrings.add(answerText + (isCorrect ? " (верный)" : ""));
                 answersAdapter.notifyDataSetChanged();
@@ -64,17 +63,12 @@ public class AddQuestionDialog extends Dialog {
 
         btnSaveQuestion.setOnClickListener(v -> {
             String questionText = etQuestionText.getText().toString();
-            // Проверяем, инициализирован ли etQuestionImageUrl
-            String imageUrl = "";
-            if (etQuestionImageUrl != null) {
-                imageUrl = etQuestionImageUrl.getText().toString();
-            }
 
             if (questionText.isEmpty() || answers.isEmpty()) {
                 Toast.makeText(getContext(), "Введите текст вопроса и добавьте ответы!", Toast.LENGTH_SHORT).show();
                 return;
             }
-            QuestionDTO question = new QuestionDTO(System.currentTimeMillis(), questionText, imageUrl, 0L, new ArrayList<>(answers));
+            Question question = new Question(System.currentTimeMillis(), questionText, "", 0L, new ArrayList<>(answers));
             listener.onQuestionAdded(question);
             dismiss();
         });

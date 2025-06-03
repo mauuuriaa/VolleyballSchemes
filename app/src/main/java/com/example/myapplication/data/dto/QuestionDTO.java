@@ -25,34 +25,8 @@ public class QuestionDTO implements Serializable {
         this.answers = answers;
     }
 
-    // Конструктор из Entity
-    public QuestionDTO(Question question) {
-        this.id = question.getId();
-        this.text = question.getText();
-        this.imageUrl = question.getImageUrl();
-        this.testId = question.getTestId();
 
-        this.answers = new ArrayList<>();
-        if (question.getAnswers() != null) {
-            for (Answer answer : question.getAnswers()) {
-                this.answers.add(new AnswerDTO(answer));
-            }
-        }
-    }
 
-    // Преобразование в Entity
-    public Question toQuestion() {
-        List<Answer> answerEntities = new ArrayList<>();
-        if (this.answers != null) {
-            for (AnswerDTO answerDTO : this.answers) {
-                answerEntities.add(answerDTO.toAnswer());
-            }
-        }
-
-        Question question = new Question(this.id, this.text, this.imageUrl, this.testId);
-        question.setAnswers(answerEntities);
-        return question;
-    }
 
     public long getId() { return id; }
     public void setId(long id) { this.id = id; }

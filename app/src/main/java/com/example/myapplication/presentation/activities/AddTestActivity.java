@@ -4,19 +4,16 @@ import android.os.Bundle;
 import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.myapplication.R;
-
-import com.example.myapplication.data.dto.QuestionDTO;
-import com.example.myapplication.data.dto.TestDTO;
-import com.example.myapplication.data.repository.InFileTestRepository;
-import com.example.myapplication.data.repository.InFileTheoryRepository;
+import com.example.myapplication.App;
 import com.example.myapplication.domain.entity.Theory;
-import com.example.myapplication.data.adapter.AdapterTheoryRepository;
+import com.example.myapplication.domain.entity.Test;
+import com.example.myapplication.domain.entity.Question;
 import com.example.myapplication.domain.usecase.TheoryUseCases;
+import com.example.myapplication.domain.usecase.TestUseCases;
 
-
-import android.view.View;
 import java.util.ArrayList;
 import java.util.List;
+import android.view.View;
 
 public class AddTestActivity extends AppCompatActivity {
     private EditText etTitle, etDescription, etPassingScore;
@@ -25,14 +22,21 @@ public class AddTestActivity extends AppCompatActivity {
     private TextView tvQuestionsCount;
 
     private List<Theory> theoryList = new ArrayList<>();
-    private List<QuestionDTO> questions = new ArrayList<>();
+    private List<Question> questions = new ArrayList<>();
     private ArrayAdapter<String> theoryAdapter;
     private long selectedTheoryId = -1;
+
+    private TheoryUseCases theoryUseCases;
+    private TestUseCases testUseCases;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_test);
+
+        // Получаем usecase только через App
+        theoryUseCases = App.getInstance(this).getTheoryUseCases();
+        testUseCases = App.getInstance(this).getTestUseCases();
 
         Button btnBack = findViewById(R.id.btn_back);
         btnBack.setOnClickListener(v -> finish());
@@ -44,10 +48,7 @@ public class AddTestActivity extends AppCompatActivity {
         btnAddQuestion = findViewById(R.id.btn_add_question);
         tvQuestionsCount = findViewById(R.id.tv_questions_count);
 
-        // Загрузка теорий
-        InFileTheoryRepository theoryRepo = new InFileTheoryRepository(this);
-        AdapterTheoryRepository adapterRepo = new AdapterTheoryRepository(theoryRepo);
-        TheoryUseCases theoryUseCases = new TheoryUseCases(adapterRepo);
+        // Загрузка теорий через usecase
         theoryList = theoryUseCases.getAllTheories();
 
         List<String> theoryTitles = new ArrayList<>();
@@ -67,10 +68,7 @@ public class AddTestActivity extends AppCompatActivity {
             public void onNothingSelected(AdapterView<?> parent) { selectedTheoryId = -1; }
         });
 
-        btnAddQuestion.setOnClickListener(v -> {
-            // Открываем диалог для добавления вопроса
-            openAddQuestionDialog();
-        });
+        btnAddQuestion.setOnClickListener(v -> openAddQuestionDialog());
 
         btnSave.setOnClickListener(v -> {
             String title = etTitle.getText().toString();
@@ -89,9 +87,10 @@ public class AddTestActivity extends AppCompatActivity {
                 return;
             }
 
-            TestDTO test = new TestDTO(System.currentTimeMillis(), title, description, selectedTheoryId, passingScore, new ArrayList<>(questions));
-            InFileTestRepository repo = new InFileTestRepository(this);
-            repo.saveTestDTO(test);
+            // Создаем Test (domain entity)
+            Test test = new Test(System.currentTimeMillis(), title, description, selectedTheoryId, passingScore);
+            test.setQuestions(new ArrayList<>(questions));
+            testUseCases.addTest(test);
 
             Toast.makeText(this, "Тест добавлен!", Toast.LENGTH_SHORT).show();
             finish();
@@ -101,9 +100,8 @@ public class AddTestActivity extends AppCompatActivity {
     }
 
     private void openAddQuestionDialog() {
-
-        AddQuestionDialog dialog = new AddQuestionDialog(this, questionDTO -> {
-            questions.add(questionDTO);
+        AddQuestionDialog dialog = new AddQuestionDialog(this, question -> {
+            questions.add(question); // Теперь question — это domain entity!
             updateQuestionsCount();
         });
         dialog.show();

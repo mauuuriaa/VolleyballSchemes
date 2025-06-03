@@ -8,10 +8,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 
 import com.example.myapplication.R;
-import com.example.myapplication.data.repository.InFileTestRepository;
+import com.example.myapplication.App;
 import com.example.myapplication.domain.entity.Test;
 import com.example.myapplication.domain.usecase.TestUseCases;
-import com.example.myapplication.data.adapter.AdapterTestRepository;
 
 public class TestDetailActivity extends AppCompatActivity {
     private TextView tvTitle, tvDescription, tvPassingScore;
@@ -34,9 +33,9 @@ public class TestDetailActivity extends AppCompatActivity {
         btnStartTest = findViewById(R.id.btn_start_test);
 
         long testId = getIntent().getLongExtra("test_id", -1);
-        InFileTestRepository inFileRepo = new InFileTestRepository(this);
-        AdapterTestRepository adapterRepo = new AdapterTestRepository(inFileRepo);
-        testUseCases = new TestUseCases(adapterRepo);
+
+        // Получаем usecase только через App
+        testUseCases = App.getInstance(this).getTestUseCases();
 
         test = testUseCases.getTestById(testId);
 
